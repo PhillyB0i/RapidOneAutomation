@@ -25,6 +25,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from time import sleep
+from pynput import keyboard
 
 #Chromedriver URL, choices, change to cwd path
 Durl = 'https://chromedriver.storage.googleapis.com/99.0.4844.51/chromedriver_win32.zip'
@@ -104,10 +105,24 @@ elif PathDriver is True:
             with open('Details.txt', 'w') as f:
                 f.write('{} {}'.format(Email,'\n' + Password))
 
-def clearConsole():
-    command = 'clear'
-    if os.name in ('nt', 'dos'): 
-        command = 'cls'
-    os.system(command)
+clearConsole()
 
+FinDoc = [
+    {keyboard.Key.f2}
+]
 
+# The currently active modifiers
+current = set()
+
+def executeFinDoc():
+    clearConsole()
+    print ("Selected Create Financial Document")
+
+def on_press(key):
+    if any([key in COMBO for COMBO in FinDoc]):
+        current.add(key)
+        if any(all(k in current for k in COMBO) for COMBO in FinDoc):
+            executeFinDoc()
+
+with keyboard.Listener(on_press=on_press) as listener:
+    listener.join()
