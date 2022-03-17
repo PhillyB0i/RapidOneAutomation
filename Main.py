@@ -4,7 +4,9 @@
 #############               Build 0.0.1               ##########
 ################################################################
 from multiprocessing.connection import wait
+from multiprocessing.sharedctypes import Value
 import os
+from sched import scheduler
 from xml.etree.ElementTree import TreeBuilder
 import requests # pip install requests
 import zipfile
@@ -111,12 +113,25 @@ FinDoc = [
     {keyboard.Key.f2}
 ]
 
+schedule = [
+
+    
+]
+
 # The currently active modifiers
 current = set()
 
 def executeFinDoc():
-    clearConsole()
     print ("Selected Create Financial Document")
+    Money = driver.find_element(by=By.XPATH, value="//img[@id='pluse-dropdown']")
+    click = ActionChains(driver)
+    click.click(Money)
+    sleep(2)
+    SwitchMoney = driver.find_element(by=By.XPATH, value="//label[contains(text(),'מסמך פיננסי חדש')]")
+    click.click(SwitchMoney)
+
+
+
 
 def on_press(key):
     if any([key in COMBO for COMBO in FinDoc]):
