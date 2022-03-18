@@ -8,10 +8,14 @@ from multiprocessing.sharedctypes import Value
 import os
 from sched import scheduler
 from xml.etree.ElementTree import TreeBuilder
+from numpy import number
 import requests # pip install requests
 import zipfile
 import pynput
 import sys
+import tkinter as tk
+from tkinter import *
+import tkinter.messagebox
 import subprocess
 import psutil
 import logging
@@ -82,10 +86,12 @@ elif PathDriver is True:
             os_isfile = os.path.isfile(exists)
             EmailPaste = linecache.getline('Details.txt', 1)
             PassPaste = linecache.getline('Details.txt', 2)
+            WebsitePaste = linecache.getline('Details.txt', 3)
+            RapidURL = (R"https://" + WebsitePaste + ".rapid-image.net")
             
             if os_isfile is True:
                 driver = webdriver.Chrome('chromedriver.exe')
-                driver.get("https://roqa2.rapid-image.net/login")
+                driver.get(RapidURL)
                 sleep(2)
                 EmailField = driver.find_element(by=By.XPATH, value="//input[@placeholder='Username']")
                 Do = ActionChains(driver)
@@ -104,40 +110,54 @@ elif PathDriver is True:
                 print()
             Email = input("UserName:")
             Password = input("Password:")
+            Website = input("Rapid URL - XXXX.rapid-image.net - only XXXX part:")
             with open('Details.txt', 'w') as f:
-                f.write('{} {}'.format(Email,'\n' + Password))
+                f.write('{}{}{}'.format(Email,'\n'+Password,'\n'+Website))
 
+sleep(5)
 clearConsole()
+print('Press F1 to show list of shortcuts')
 
+#HotKeys
+ShortcutBOX = [
+    {keyboard.Key.f1}
+]
 FinDoc = [
     {keyboard.Key.f2}
-]
-
-schedule = [
-
-    
 ]
 
 # The currently active modifiers
 current = set()
 
-def executeFinDoc():
-    print ("Selected Create Financial Document")
-    Money = driver.find_element(by=By.XPATH, value="//img[@id='pluse-dropdown']")
-    click = ActionChains(driver)
-    click.click(Money)
-    sleep(2)
-    SwitchMoney = driver.find_element(by=By.XPATH, value="//label[contains(text(),'מסמך פיננסי חדש')]")
-    click.click(SwitchMoney)
+#Popup ShortCut 
+def executeMenu():
+    print('Showing ShortCut List')
+    tkinter.messagebox.showinfo("Rapid Shortcuts",  "F1 - Shortcut list"'\n'"F2 - Create Financial Document")
+    clearConsole()
 
 
-
-
-def on_press(key):
-    if any([key in COMBO for COMBO in FinDoc]):
+#execute on key press Shortcut INFO
+def ShortcutBOXMenu(key):
+    if any([key in COMBO for COMBO in ShortcutBOX]):
         current.add(key)
-        if any(all(k in current for k in COMBO) for COMBO in FinDoc):
-            executeFinDoc()
+        if any(all(k in current for k in COMBO) for COMBO in ShortcutBOX):
+            executeMenu()    
 
-with keyboard.Listener(on_press=on_press) as listener:
+#Listen for keyboard presses
+with keyboard.Listener(on_press=ShortcutBOXMenu) as listener:
     listener.join()
+
+
+    #$$$ Doc execution
+    def executeFinDoc():
+        print ("Selected Create Financial Document")
+        driver.get(RapidURL+"/financial/new-sale")
+
+    #execute on key press $$ Doc
+    def Finny(key):
+        if any([key in COMBO for COMBO in FinDoc]):
+            current.add(key)
+            if any(all(k in current for k in COMBO) for COMBO in FinDoc):
+                executeFinDoc()
+    with keyboard.Listener(on_press=Finny) as listener:
+        listener.join()
