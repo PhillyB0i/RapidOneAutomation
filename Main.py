@@ -19,6 +19,7 @@ import tkinter.messagebox
 import subprocess
 import psutil
 import logging
+from datetime import datetime
 import linecache
 import time
 from requests.sessions import dispatch_hook
@@ -42,7 +43,6 @@ FileName = chromedriver.url[Durl.rfind('/')+1:]
 path = os.getcwd()
 DriverExist = 'chromedriver.exe'
 PathDriver = os.path.isfile(DriverExist)
-
 
 def clearConsole():
     command = 'clear'
@@ -116,48 +116,75 @@ elif PathDriver is True:
 
 sleep(5)
 clearConsole()
-print('Press F1 to show list of shortcuts')
+print('['+datetime.now().strftime("%H:%M:%S")+']:',"Press CONTROL + F1 to show list of shortcuts")
 
 #HotKeys
 ShortcutBOX = [
-    {keyboard.Key.f1}
+    {keyboard.Key.ctrl_l, keyboard.Key.f1}
 ]
 FinDoc = [
-    {keyboard.Key.f2}
+    {keyboard.Key.ctrl_l, keyboard.Key.f2}
 ]
-
+LastPatient = [
+    {keyboard.Key.ctrl_l, keyboard.Key.f3}
+]
 # The currently active modifiers
 current = set()
 
 #Popup ShortCut 
 def executeMenu():
-    print('Showing ShortCut List')
-    tkinter.messagebox.showinfo("Rapid Shortcuts",  "F1 - Shortcut list"'\n'"F2 - Create Financial Document")
-    clearConsole()
+    print('['+datetime.now().strftime("%H:%M:%S")+']:',"Showing shortcuts list")
+    tkinter.messagebox.showinfo("Rapid Shortcuts",  "CONTROL + F1 - Shortcut list"'\n'"CONTROL + F2 - Create Financial Document")
 
+#Move to FinDoc
+def executeFinDoc():
+    print ('['+datetime.now().strftime("%H:%M:%S")+']:',"Selected Create Financial Document")
+    driver.get(RapidURL+"/financial/new-sale")
 
-#execute on key press Shortcut INFO
-def ShortcutBOXMenu(key):
+#Move to latest patient visited
+def executeLastPat():
+    print ('['+datetime.now().strftime("%H:%M:%S")+']:',"Selected Latest Patient")
+    Do.click(driver.find_element(by=By.XPATH, value="//img[@id='history-dropdown']"))
+    Do.click(driver.find_element(by=By.XPATH, value="//li[@id='history_wrapper']//li[1]//div[1]//div[1]"))
+
+#execute Shortcut INFO
+def HotkeyPress(key):
     if any([key in COMBO for COMBO in ShortcutBOX]):
         current.add(key)
         if any(all(k in current for k in COMBO) for COMBO in ShortcutBOX):
-            executeMenu()    
+            executeMenu()
+
+#Remove keys
+def HotkeyRelease(key):
+    if any([key in COMBO for COMBO in ShortcutBOX]):
+        current.remove(key)
+
+#execute fin doc
+def FinnyDoc(key):
+    if any([key in COMBO for COMBO in FinDoc]):
+        current.add(key)
+        if any(all(k in current for k in COMBO) for COMBO in FinDoc):
+            executeFinDoc()
+
+#Remove keys
+def FinnyRelease(key):
+    if any([key in COMBO for COMBO in FinDoc]):
+        current.remove(key)
+
+#execute latest patient
+def lastpatpress(key):
+    if any([key in COMBO for COMBO in LastPatient]):
+        current.add(key)
+        if any(all(k in current for k in COMBO) for COMBO in LastPatient):
+            executeLastPat()
+
+#Remove Keys
+def lastpatrelease(key):
+    if any([key in COMBO for COMBO in LastPatient]):
+        current.remove(key)
 
 #Listen for keyboard presses
-with keyboard.Listener(on_press=ShortcutBOXMenu) as listener:
-    listener.join()
-
-
-    #$$$ Doc execution
-    def executeFinDoc():
-        print ("Selected Create Financial Document")
-        driver.get(RapidURL+"/financial/new-sale")
-
-    #execute on key press $$ Doc
-    def Finny(key):
-        if any([key in COMBO for COMBO in FinDoc]):
-            current.add(key)
-            if any(all(k in current for k in COMBO) for COMBO in FinDoc):
-                executeFinDoc()
-    with keyboard.Listener(on_press=Finny) as listener:
-        listener.join()
+with keyboard.Listener(on_press=HotkeyPress, on_release=HotkeyRelease) as listener:
+    with keyboard.Listener(on_press=FinnyDoc, on_release=FinnyRelease) as listener:
+        with keyboard.Listener(on_press=lastpatpress, on_release=lastpatrelease) as listener:
+            listener.join()
