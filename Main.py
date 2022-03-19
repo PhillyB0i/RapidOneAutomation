@@ -82,11 +82,11 @@ elif PathDriver is True:
         while True:
             print("Opening Rapid..")
             sleep(1)
-            exists = 'Details.txt'
+            exists = 'Details.ini'
             os_isfile = os.path.isfile(exists)
-            EmailPaste = linecache.getline('Details.txt', 1)
-            PassPaste = linecache.getline('Details.txt', 2)
-            WebsitePaste = linecache.getline('Details.txt', 3)
+            EmailPaste = linecache.getline('Details.ini', 1)
+            PassPaste = linecache.getline('Details.ini', 2)
+            WebsitePaste = linecache.getline('Details.ini', 3)
             RapidURL = (R"https://" + WebsitePaste + ".rapid-image.net")
             
             if os_isfile is True:
@@ -111,7 +111,7 @@ elif PathDriver is True:
             Email = input("UserName:")
             Password = input("Password:")
             Website = input("Rapid URL - XXXX.rapid-image.net - only XXXX part:")
-            with open('Details.txt', 'w') as f:
+            with open('Details.ini', 'w') as f:
                 f.write('{}{}{}'.format(Email,'\n'+Password,'\n'+Website))
 
 sleep(5)
