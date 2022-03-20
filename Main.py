@@ -6,6 +6,7 @@
 from multiprocessing.connection import wait
 from multiprocessing.sharedctypes import Value
 import os
+from platform import release
 from sched import scheduler
 from xml.etree.ElementTree import TreeBuilder
 from numpy import number
@@ -33,12 +34,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from time import sleep
 from pynput import keyboard
+from pynput.keyboard import Key, Controller
 
 #Chromedriver URL, choices, change to cwd path
 Durl = 'https://chromedriver.storage.googleapis.com/99.0.4844.51/chromedriver_win32.zip'
 chromedriver = requests.get(Durl)
-yesChoice = ['y', 'Y', 'ye', 'Ye', 'Yes', 'yes', 'YES', 'YE']
-noChoice = ['n', 'N', 'no', 'No', 'Nah', 'nah', 'NAH', 'NO']
 FileName = chromedriver.url[Durl.rfind('/')+1:]
 path = os.getcwd()
 DriverExist = 'chromedriver.exe'
@@ -82,11 +82,11 @@ elif PathDriver is True:
         while True:
             print("Opening Rapid..")
             sleep(1)
-            exists = 'Details.ini'
+            exists = 'Config.ini'
             os_isfile = os.path.isfile(exists)
-            EmailPaste = linecache.getline('Details.ini', 1)
-            PassPaste = linecache.getline('Details.ini', 2)
-            WebsitePaste = linecache.getline('Details.ini', 3)
+            EmailPaste = linecache.getline('Config.ini', 1)
+            PassPaste = linecache.getline('Config.ini', 2)
+            WebsitePaste = linecache.getline('Config.ini', 3)
             RapidURL = (R"https://" + WebsitePaste + ".rapid-image.net")
             
             if os_isfile is True:
@@ -106,12 +106,12 @@ elif PathDriver is True:
                 
 
             if os_isfile is False:
-                print("Login Details file missing please type login info:")
+                print("Login Config file missing please type login info:")
                 print()
             Email = input("UserName:")
             Password = input("Password:")
             Website = input("Rapid URL - XXXX.rapid-image.net - only XXXX part:")
-            with open('Details.ini', 'w') as f:
+            with open('Config.ini', 'w') as f:
                 f.write('{}{}{}'.format(Email,'\n'+Password,'\n'+Website))
 
 sleep(5)
@@ -154,22 +154,12 @@ def HotkeyPress(key):
         if any(all(k in current for k in COMBO) for COMBO in ShortcutBOX):
             executeMenu()
 
-#Remove keys
-def HotkeyRelease(key):
-    if any([key in COMBO for COMBO in ShortcutBOX]):
-        current.remove(key)
-
 #execute fin doc
 def FinnyDoc(key):
     if any([key in COMBO for COMBO in FinDoc]):
         current.add(key)
         if any(all(k in current for k in COMBO) for COMBO in FinDoc):
             executeFinDoc()
-
-#Remove keys
-def FinnyRelease(key):
-    if any([key in COMBO for COMBO in FinDoc]):
-        current.remove(key)
 
 #execute latest patient
 def lastpatpress(key):
@@ -178,13 +168,15 @@ def lastpatpress(key):
         if any(all(k in current for k in COMBO) for COMBO in LastPatient):
             executeLastPat()
 
-#Remove Keys
-def lastpatrelease(key):
-    if any([key in COMBO for COMBO in LastPatient]):
-        current.remove(key)
+#Remove keys
+def FinnyRelease(key):
+    if any([key in COMBO for COMBO in FinDoc]):
+        if any([key in COMBO for COMBO in ShortcutBOX]):
+            if any([key in COMBO for COMBO in LastPatient]):
+                current.remove(key)
 
 #Listen for keyboard presses
-with keyboard.Listener(on_press=HotkeyPress, on_release=HotkeyRelease) as listener:
+with keyboard.Listener(on_press=HotkeyPress, on_release=FinnyRelease) as listener:
     with keyboard.Listener(on_press=FinnyDoc, on_release=FinnyRelease) as listener:
-        with keyboard.Listener(on_press=lastpatpress, on_release=lastpatrelease) as listener:
+        with keyboard.Listener(on_press=lastpatpress, on_release=FinnyRelease) as listener:
             listener.join()
