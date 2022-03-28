@@ -36,6 +36,8 @@ from time import sleep
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
 
+
+current = []
 #Chromedriver URL, choices, change to cwd path
 Durl = 'https://chromedriver.storage.googleapis.com/99.0.4844.51/chromedriver_win32.zip'
 chromedriver = requests.get(Durl)
@@ -119,17 +121,10 @@ clearConsole()
 print('['+datetime.now().strftime("%H:%M:%S")+']:',"Press CONTROL + F1 to show list of shortcuts")
 
 #HotKeys
-ShortcutBOX = [
-    {keyboard.Key.ctrl_l, keyboard.Key.f1}
-]
-FinDoc = [
-    {keyboard.Key.ctrl_l, keyboard.Key.f2}
-]
-LastPatient = [
-    {keyboard.Key.ctrl_l, keyboard.Key.f3}
-]
-# The currently active modifiers
-current = set()
+ShortcutBOX = [keyboard.Key.ctrl_l, keyboard.Key.f1]
+FinDoc = [keyboard.Key.ctrl_l, keyboard.Key.f2]
+LastPatient = [keyboard.Key.ctrl_l, keyboard.Key.f3]
+exitscript = [keyboard.Key.alt_l, keyboard.Key.esc]
 
 #Popup ShortCut 
 def executeMenu():
@@ -147,36 +142,28 @@ def executeLastPat():
     Do.click(driver.find_element(by=By.XPATH, value="//img[@id='history-dropdown']"))
     Do.click(driver.find_element(by=By.XPATH, value="//li[@id='history_wrapper']//li[1]//div[1]//div[1]"))
 
+#Kill Chromedriver.exe and exit script
+def exitsoft():
+    subprocess.call("TASKKILL /f  /IM  CHROME.EXE")
+    subprocess.call("TASKKILL /f  /IM  CHROMEDRIVER.EXE")
+    sleep(2)
+    exit()
+    
 #execute Shortcut INFO
 def HotkeyPress(key):
-    if any([key in COMBO for COMBO in ShortcutBOX]):
-        current.add(key)
-        if any(all(k in current for k in COMBO) for COMBO in ShortcutBOX):
+    global current
+    current.append(key)
+    if(len(current) == 2):
+        if(current[0] == ShortcutBOX[0] and current[1] == ShortcutBOX[1]):
             executeMenu()
-
-#execute fin doc
-def FinnyDoc(key):
-    if any([key in COMBO for COMBO in FinDoc]):
-        current.add(key)
-        if any(all(k in current for k in COMBO) for COMBO in FinDoc):
+        elif (current[0] == FinDoc[0] and current[1] == FinDoc[1]):
             executeFinDoc()
-
-#execute latest patient
-def lastpatpress(key):
-    if any([key in COMBO for COMBO in LastPatient]):
-        current.add(key)
-        if any(all(k in current for k in COMBO) for COMBO in LastPatient):
+        elif (current[0] == LastPatient[0] and current[1] == LastPatient[1]):   
             executeLastPat()
-
-#Remove keys
-def FinnyRelease(key):
-    if any([key in COMBO for COMBO in FinDoc]):
-        if any([key in COMBO for COMBO in ShortcutBOX]):
-            if any([key in COMBO for COMBO in LastPatient]):
-                current.remove(key)
+        elif (current[0] == exitscript[0] and current[1] == exitscript[1]):   
+            exitsoft()
+        current = []
 
 #Listen for keyboard presses
-with keyboard.Listener(on_press=HotkeyPress, on_release=FinnyRelease) as listener:
-    with keyboard.Listener(on_press=FinnyDoc, on_release=FinnyRelease) as listener:
-        with keyboard.Listener(on_press=lastpatpress, on_release=FinnyRelease) as listener:
-            listener.join()
+with keyboard.Listener(on_press=HotkeyPress) as listener:
+    listener.join()
