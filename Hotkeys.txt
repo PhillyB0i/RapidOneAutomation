@@ -1,0 +1,24 @@
+General:
+Hotkey List: LEFT CONTROL + F1
+Create Financial Document: LEFT CONTROL + F2
+Jump to latest patient: LEFT CONTROL + F3
+Switch schedule to today: LEFT CONTROL + F6
+
+Reports:
+Jump to Treatment Report: LEFT CONTROL + F7
+Jump to Patient Report: LEFT CONTROL + F8
+Jump to Attendance Managment: LEFT CONTROL + F9
+Jump to Custom daily income report: LEFT CONTROL + F10
+
+CRM:
+Move to lead managment: LEFT ALT + F1
+Move to next page: LEFT ALT + Right arrow
+Move to previous page: LEFT ALT + Left arrow
+Jump to first page: LEFT ALT + Up arrow
+Jump to last page: LEFT ALT + Down arrow
+Show latest leads for today: LEFT ALT + F2
+Show latest leads for last 7 days: LEFT ALT + F3
+Show latest leads for last 14 days: LEFT ALT + F5
+
+
+"General:"'\n'"Hotkey List: LEFT CONTROL + F1"'\n'"Create Financial Document: LEFT CONTROL + F2"'\n'"Jump to latest patient: LEFT CONTROL + F3"'\n'"Switch schedule to today: LEFT CONTROL + F6"'\n''\n'"Reports:"'\n'"Jump to Treatment Report: LEFT CONTROL + F7"'\n'"Jump to Patient Report: LEFT CONTROL + F8"'\n'"Jump to Attendance Managment: LEFT CONTROL + F9"'\n'"Jump to Custom daily income report: LEFT CONTROL + F10"'\n''\n'"CRM:"'\n'"Move to lead managment: LEFT ALT + F1"'\n'"Move to next page: LEFT ALT + Right arrow"'\n'"Move to previous page: LEFT ALT + Left arrow"'\n'"Jump to first page: LEFT ALT + Up arrow"'\n'"Jump to last page: LEFT ALT + Down arrow"'\n'"Show latest leads for today: LEFT ALT + F2"'\n'"Show latest leads for last 7 days: LEFT ALT + F3"'\n'"Show latest leads for last 14 days: LEFT ALT + F5"

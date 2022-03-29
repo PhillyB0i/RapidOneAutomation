@@ -350,3 +350,4 @@ def HotkeyPress(key):
 #Listen for keyboard presses
 with keyboard.Listener(on_press=HotkeyPress) as listener:
     listener.join()
+
