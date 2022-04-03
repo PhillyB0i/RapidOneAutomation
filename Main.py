@@ -1,19 +1,22 @@
 ################################################################
 #############      Created by Philip Boubenchikov     ##########
 #############              For RapidOne               ##########
-#############               Build 1.0.0               ##########
+#############               Build 1.0.1               ##########
 ################################################################
-from multiprocessing.connection import wait
+from multiprocessing import parent_process
+from multiprocessing.connection import Listener, wait
 from multiprocessing.sharedctypes import Value
 import os
 from platform import release
 from sched import scheduler
 from sre_constants import JUMP
+import tkinter
 from xml.etree.ElementTree import TreeBuilder
 from numpy import number
 import requests # pip install requests
 import zipfile
 import pynput
+from pynput.keyboard import Listener
 import sys
 import tkinter as tk
 from tkinter import *
@@ -57,7 +60,7 @@ def clearConsole():
 
 
 print("Made by Philip Boubenchikov"'\n')
-print('Build 1.0.0')
+print('Build 1.0.1')
 
 chromeoptions = Options()
 chromeoptions.add_argument("--log-level=3")
@@ -155,8 +158,8 @@ showlatest14 = [keyboard.Key.alt_l, keyboard.Key.f5]
 #Popup ShortCut 
 def executeMenu():
     print('['+datetime.now().strftime("%H:%M:%S")+']:',"Showing shortcuts list")
-    tkinter.messagebox.showinfo("Rapid Shortcuts",  "General:"'\n'"Hotkey List: LEFT CONTROL + F1"'\n'"Create Financial Document: LEFT CONTROL + F2"'\n'"Jump to latest patient: LEFT CONTROL + F3"'\n'"Switch schedule to today: LEFT CONTROL + F6"'\n''\n'"Reports:"'\n'"Jump to Treatment Report: LEFT CONTROL + F7"'\n'"Jump to Patient Report: LEFT CONTROL + F8"'\n'"Jump to Attendance Managment: LEFT CONTROL + F9"'\n'"Jump to Custom daily income report: LEFT CONTROL + F10"'\n''\n'"CRM:"'\n'"Move to lead managment: LEFT ALT + F1"'\n'"Move to next page: LEFT ALT + Right arrow"'\n'"Move to previous page: LEFT ALT + Left arrow"'\n'"Jump to first page: LEFT ALT + Up arrow"'\n'"Jump to last page: LEFT ALT + Down arrow"'\n'"Show latest leads for today: LEFT ALT + F2"'\n'"Show latest leads for last 7 days: LEFT ALT + F3"'\n'"Show latest leads for last 14 days: LEFT ALT + F5")
-
+    tkinter.messagebox.showinfo("Rapid Shortcuts",  "General:"'\n'"Hotkey List: LEFT CONTROL + F1"'\n'"Create Financial Document: LEFT CONTROL + F2"'\n'"Jump to latest patient: LEFT CONTROL + F3"'\n'"Switch schedule to today: LEFT CONTROL + F6"'\n''\n'"Reports:"'\n'"Jump to Treatment Report: LEFT CONTROL + F7"'\n'"Jump to Patient Report: LEFT CONTROL + F8"'\n'"Jump to Attendance Managment: LEFT CONTROL + F9"'\n'"Jump to Custom daily income report: LEFT CONTROL + F10"'\n''\n'"CRM:"'\n'"Move to lead managment: LEFT ALT + F1"'\n'"Move to next page: LEFT CONTROL + Right arrow"'\n'"Move to previous page: CONTROL ALT + Left arrow"'\n'"Jump to first page: LEFT CONTROL + Up arrow"'\n'"Jump to last page: LEFT CONTROL + Down arrow"'\n'"Show latest leads for today: LEFT ALT + F2"'\n'"Show latest leads for last 7 days: LEFT ALT + F3"'\n'"Show latest leads for last 14 days: LEFT ALT + F5")
+    
 #Move to FinDoc
 def executeFinDoc():
     print ('['+datetime.now().strftime("%H:%M:%S")+']:',"Selected Create Financial Document")
@@ -349,5 +352,7 @@ def HotkeyPress(key):
 
 #Listen for keyboard presses
 with keyboard.Listener(on_press=HotkeyPress) as listener:
+    listener = Listener()
+    listener.start()
     listener.join()
 
