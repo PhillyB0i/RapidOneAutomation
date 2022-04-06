@@ -1,7 +1,7 @@
 ################################################################
 #############      Created by Philip Boubenchikov     ##########
 #############              For RapidOne               ##########
-#############               Build 1.0.1               ##########
+#############               Build 1.0.0               ##########
 ################################################################
 from multiprocessing import parent_process
 from multiprocessing.connection import Listener, wait
@@ -60,7 +60,7 @@ def clearConsole():
 
 
 print("Made by Philip Boubenchikov"'\n')
-print('Build 1.0.1')
+print('Build 1.0.0')
 
 chromeoptions = Options()
 chromeoptions.add_argument("--log-level=3")
@@ -107,11 +107,11 @@ elif PathDriver is True:
                 driver = webdriver.Chrome(options=chromeoptions)
                 driver.get(RapidURL)
                 sleep(2)
-                EmailField = driver.find_element(by=By.XPATH, value="//input[@placeholder='Username']")
+                EmailField = driver.find_element(by=By.XPATH, value="//input[@type='text']")
                 Do = ActionChains(driver)
                 #Do.click(EmailField)
                 EmailField.send_keys(EmailPaste)
-                PasswordField = driver.find_element(by=By.XPATH, value="//input[@placeholder='Password']")
+                PasswordField = driver.find_element(by=By.XPATH, value="//input[@type='password']")
                 #Do.click(PasswordField)
                 PasswordField.send_keys(PassPaste)
                 SignIn = driver.find_element(by=By.XPATH, value="//button[@class='login_btn btn ng-binding']")
@@ -227,7 +227,7 @@ def executeleadmanamgent():
     print ('['+datetime.now().strftime("%H:%M:%S")+']:', "Jumping to lead managment")
     driver.get(RapidURL+"/crm/lead-management/")
 
-#Move to the lead page
+#Move to the next lead page
 def executemovenext():
     if "/crm/lead-management/" in driver.current_url:
         print ('['+datetime.now().strftime("%H:%M:%S")+']:',"Moving to next leads page")
@@ -307,6 +307,7 @@ def exitsoft():
     subprocess.call("TASKKILL /f  /IM  CHROME.EXE")
     subprocess.call("TASKKILL /f  /IM  CHROMEDRIVER.EXE")
     sleep(2)
+    listener.stop()
     exit()
 
 #execute Shortcut INFO
